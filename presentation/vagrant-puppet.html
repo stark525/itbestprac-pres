@@ -2,7 +2,7 @@
 <html lang="en">	
 <head>
 	<meta charset="utf-8">
-	<title>Wingspan Operations: Intro to Vagrant and Puppet</title>
+	<title>Devops Solutions to Traditional I.T. Challenges</title>
 	<link rel="stylesheet" href="css/reveal.min.css">
 	<link rel="stylesheet" href="css/theme/default.css" id="theme">	
 	<!--Add support for earlier versions of Internet Explorer -->
@@ -26,11 +26,12 @@
 				<img src="rebus.png"></img>
 			</section>
 			<section id="title">
-				<h2>DevOps Solutions to Traditional I.T. Challenges</h2>
+				<h1>DevOps Solutions</h1>
+				<h2>to Traditional I.T. Challenges</h2>
 				<br>
 				<br>
 				<br>
-				<h5>Dan Stark</h5>
+				<h3>Dan Stark</h3>
 				<h5><p><a href="https://github.com/stark525/itbestprac-pres">https://github.com/stark525/itbestprac-pres</a><p></h5>				
 			</section>
 			<section id="intro-0">
@@ -111,7 +112,7 @@
 				<h2>Your puppetlabs-approved example</h2>
 			<p><pre><code class="puppet">    file { '/etc/ssh/sshd_config':
       ensure => file,
-      mode   => 600,
+      mode   => '0600',
       source => 'puppet:///modules/ssh/sshd_config',
     }
     service { 'sshd':
@@ -127,8 +128,73 @@
 
 
 
+			<section id="params-intro">
+				<h1>Parameterized classes</h1>
+				<p>Add parameters such as version </p>
+			</section>
+			<section id="params-example"><h1>Super Basic Example</h1>
+	<p><pre><code class="puppet">file { 'C:\SomeApp.exe':
+    ensure  => present,
+    source  => 'puppet:///modules/SomeApp/SomeApp.exe',
+    owner   => 'Administrator',
+    mode    => '0755',
+    require => File['C:\SomeApp'],
+    }
+ exec { "set_lb_url":
+    command     => "C:\SomeApp.exe loadbalancerUrl=\"http://$::lb_url\"",
+    subscribe   => File['C:\SomeApp.exe'],
+    notify      => Service['SomeApp'],
+    refreshonly => true,
+    }
+  }  </code></pre></p></font>
+				</section>
 
+
+
+			<section id="template-intro">
+				<h1>Templates</h1>
+				<p>Pass paramters through to config files</p>
+			</section>	
 			
+			<section id="template-example1">
+				<h1>site.pp</h1>
+				<p>manifests/site.pp</p>
+				<p><pre><code class="ruby">class {'apache2':
+				apache2_listen_port => '8000',
+}</code></pre></p></font>
+			</section>
+			
+			<section id="template-example2">
+				<h1>apache2 templates</h1>
+				<p>/modules/apache2/templates/http.conf.erb</p>
+				<p><pre><code class="xml"># Listen: Allows you to bind Apache to specific IP addresses and/or
+				# ports, in addition to the default. See also the <VirtualHost>
+				# directive.
+				#
+				# Change this to Listen on specific IP addresses as shown below to
+				# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
+				#
+				#Listen 12.34.56.78:80
+				Listen <%= scope.lookupvar('::apache2_listen_port') %>
+				}</code></pre></p></font>
+			</section>
+			
+			<section id="template-example3">
+				<h1>apache2 manifest</h1>
+				<p>/modules/apache2/manifests/init.pp</p>
+	<p><pre><code class="puppet">class apache2 {
+	file { '/etc/httpd/conf/httpd.conf':
+	   content => template('apache2/httpd.conf.erb'),
+	   owner   => 'apache',
+	   group   => 'apache',
+	   mode    => '0644',
+	}
+}
+	</code></pre></p></font>
+			</section>				
+			
+
+
 			<section id="facter-intro">
 				<h1>Facter</h1>
 				<p>Provides "facts" regarding key components of your machine: ipaddress_eth0, fqdn, etc</p>
