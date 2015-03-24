@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">	
+<head>
+	<meta charset="utf-8">
+	<title>Wingspan Operations: Intro to Vagrant and Puppet</title>
+	<link rel="stylesheet" href="css/reveal.min.css">
+	<link rel="stylesheet" href="css/theme/default.css" id="theme">	
+	<!--Add support for earlier versions of Internet Explorer -->
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="C:\Users\dstark\Desktop\Wingspan Prez\highlight\styles\tomorrow-night-eighties.css">
+	<script src="C:\Users\dstark\Desktop\Wingspan Prez\highlight\highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</head>
+ 
+<body>
+	<!-- Wrap the entire slide show in a div using the "reveal" class. -->
+	<div class="reveal">
+		<!-- Wrap all slides in a single "slides" class -->
+		<div class="slides">
+ 
+			<!-- ALL SLIDES GO HERE -->
+			<!-- Each section element contains an individual slide -->
+			<section id="title">
+				<h2>DevOps Solutions to Traditional I.T. Challenges</h2>
+				<br>
+				<br>
+				<br>
+				<h5>Dan Stark</h5>
+				<h5><p><a href="https://github.com/stark525/itbestprac-pres">https://github.com/stark525/itbestprac-pres</a><p></h5>				
+			</section>
+			<section id="intro-0">
+				<h1>Objectives</h1>
+				<ul style="list-style-type:disc">
+					<li>Use Puppet to provide modular setup of a new employee's PC</li>
+					<li>Use Vagrant to test our Puppet scripts without using company resources (VM hosts)</li>
+					<li>[Use git to version control our Puppet code]</li>
+				</ul>
+			</section>
+			
+			<section id="intro-1">
+				<h1>What is Vagrant?</h1>
+				<ul style="list-style-type:disc">
+					<li>Local virtual machine hosting</li>
+					<li>Publicly available or build your own</li>
+					<li>Oracle VirtualBox or VMware fusion</li>					
+					<li><a href="https://www.vagrantup.com/">https://www.vagrantup.com/</a></li>
+				</ul>
+			</section>
+			<section id="desc-vagrant">
+				<h1>How does Vagrant work?</h1>
+				<ul style="list-style-type:disc">
+					<li>Management through Vagrant file</li>
+					<ul style="list-style-type:disc">
+						<li>VM source (local vs online)</li>
+						<li>Configure your VM</li>
+						<li>Networking / Port forwarding</li>
+						<li>Provisioning (bash, powershell, etc)</li>
+					</ul>
+				</ul>
+			</section>
+			
+			<section id="setup-vagrant">
+				<h1>Setup</h1>
+				<ul style="list-style-type:disc">
+					<li><a href="https://www.vagrantup.com/downloads.html">Download Virtualbox</a></li>
+					<li><a href="https://www.virtualbox.org/wiki/Downloads">Download Vagrant</a></li>
+					<li>Allow Virtualbox and Vagrant private network access (Windows UAC)</li>	
+				</ul>
+			</section>
+
+
+
+			<section id="intro-2">
+				<h1>What is Puppet?</h1>
+				<ul style="list-style-type:disc">
+						<ul>
+						<li>Configuration Management System</li>
+						<li>Enforcement, reporting, auditing</li>
+						<li>Facter + custom facts</li>
+						<li>Data models to self identify</li>
+						<li>Testing</li>
+						<li>Easy to read, repeatable process</li>
+						</ul>
+				</ul>
+			</section>			
+			<section id="puppet-struct">
+				<h2>Architecture</h2>
+				<p>Puppet master, agents</p>
+				<p>Agents create SSL certificate, signed by Puppet master (or autosigned)</p>
+				<p>Can run in masterless mode</p>
+			</section>
+			<section id="puppet-struct2">
+				<h3>Environment Level Configs</h3>
+				<p>site.pp</p><br>
+				<h3>modules</h3>
+				<p>manifests, files, templates</p>
+			</section>
+
+			<section id="resources">
+				<h2>Puppet resources</h2>
+				<p>Types - file, exec, service, ...</p> 
+			<p>Load in random order</p>
+			</section>
+			<section id="puppet-example">
+				<h2>Your puppetlabs-approved example</h2>
+			<p><pre><code class="puppet">    file { '/etc/ssh/sshd_config':
+      ensure => file,
+      mode   => 600,
+      source => 'puppet:///modules/ssh/sshd_config',
+    }
+    service { 'sshd':
+      ensure    => running,
+      enable    => true,
+      subscribe => File['/etc/ssh/sshd_config'],
+    }</code></pre></p>
+			</section>
+
+
+
+
+
+
+
+
+			
+			<section id="facter-intro">
+				<h1>Facter</h1>
+				<p>Provides "facts" regarding key components of your machine: ipaddress_eth0, fqdn, etc</p>
+				<p><pre><code class="html">[root@somehost]# facter | grep fqdn
+fqdn => somehost.example.com</code></pre></p><br>
+				<p>Installs with puppet</p><br>
+				<p>Free parameters you can use in your Puppet code</p>
+			</section>
+ 			<section id="custom-facts">
+ 				<h2>Custom Facts</h2>
+ 				<p>Create your own facts to drive logic</p>
+ 				<p>Added to facter list at puppet runtime</p>
+ 			</section>
+ 			<section id="custom-example">
+ 				<p><pre><code class="ruby">Facter.add(:environment) do
+    setcode do
+        if Facter.value(:hostname) =~ /QA/
+            'QA'
+        elsif Facter.value(:hostname) =~ /PRD/
+            'PRD'
+        elsif Facter.value(:hostname) =~ /dev/
+            'DEV'
+        else
+	        nil
+        end
+    end
+end</code></pre></p>
+			</section>
+<section id="muh-example"><h1>Custom Fact Example</h1>
+	<p><pre><code class="puppet">file { 'C:\SomeApp.exe':
+    ensure  => present,
+    source  => 'puppet:///modules/SomeApp/SomeApp.exe',
+    owner   => 'Administrator',
+    mode    => '0755',
+    require => File['C:\SomeApp'],
+    }
+ exec { "set_lbUrl":
+    command     => "C:\SomeApp.exe loadbalancerUrl=\"http://$::lb_url\"",
+    subscribe   => File['C:\SomeApp.exe'],
+    notify      => Service['SomeApp'],
+    refreshonly => true,
+    }
+  }  </code></pre></p></font>
+</section>
+<section id="wally">
+	<iframe width="1680" height="660" src="https://www.youtube.com/embed/FzjtPtOH-Hg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"></iframe>
+</section>
+<section id="standalone">
+	<h1>Developer Implications</h1>
+	<p>All-in-one instance that uses localhost, Amazon EC2, etc.</p>
+	<p>You're running what Ops uses for qualified environments</p>
+	<p>You can help drive Operations</p>
+</section>
+
+<section id="future">
+	<h1>The future of puppet</h1>
+	<img src="content/bacon.jpg"></img>
+</section>
+<section id="foreman">
+	<h1>Foreman</h1>
+	<p>Provisioning</p>
+	<p>Configuration</p>
+	<p>Monitoring</p><br>
+	<h3><a href="http://theforeman.org/">Foreman</a></h3>
+</section>
+<section id="rspec">
+	<h1>rspec-puppet</h1>
+	<p>Test your modules without having to try an ad-hoc puppet run</p><br>
+	<h3><a href="http://rspec-puppet.com/tutorial/">rspec</a></h3>
+</section>
+<section id="hiera">
+	<h1>Hiera data model</h1>
+	<p>Completely abstract data out of site.pp</p>
+	<p>New nodes spun up automagically know what they need</p>
+	<p>Great for scaling</p>
+</section>
+
+<section id="conclusion">
+	<h1>Conclusion</h1>
+</section>
+<section id="outro">
+	<h2>99.99% uptime #thedream</h2>
+		<ul>
+		<li>Develop and test change faster</li>
+		<li>Maintain a stable state</li>
+		<li>Transparency within Operations</li>
+		</ul>
+	</h1>
+</section>
+<section id="camb">
+	<img src="content/camb.jpg"></img>
+</section>
+			</div>
+	</div>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.min.js"></script>
+ 
+	<script>
+		// Required, even if empty.
+		Reveal.initialize({
+		});
+	</script>
+</body>
+</html>
