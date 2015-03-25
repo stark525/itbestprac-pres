@@ -12,6 +12,12 @@ class sublime_text {
         install_options => ['/VERYSILENT'],
         require         => File['Sublime-2.0.2.exe'],
       }
+      exec {'pin_sublime':
+        command   => template('sublime_text/pin_sublime.ps1'),
+        provider  => powershell,
+        refreshonly => true,
+        subscribe   => Package['Sublime Text 2.0.2'],
+      }          
     }
     default: {
       fail("Unsupported osfamily: ${::osfamily}")
