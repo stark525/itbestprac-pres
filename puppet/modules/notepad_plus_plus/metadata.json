@@ -1,0 +1,36 @@
+{
+  "name": "dna-notepad_plus_plus",
+  "version": "0.1.1",
+  "author": "David J Felix <felix.davidj@gmail.com>",
+  "summary": "Notepad++ Module",
+  "license": "MIT",
+  "source": "https://github.com/hatchery/dna-notepad_plus_plus/",
+  "project_page": "https://github.com/hatchery/dna-notepad_plus_plus/",
+  "issues_url": "https://github.com/hatchery/dna-notepad_plus_plus/issues/",
+  "description": "A module to give system access to Notepad++",
+  "dependecies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=3.2.0 <5.0.0"
+    },
+    {
+      "name": "puppetlabs-powershell",
+      "version_requirement": ">= 1.0.1"
+    },
+    {
+      "name": "dna-download_file",
+      "version_requirement": ">= 1.4.3"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    }
+  ],
+  "dependencies": [
+  
+  ]
+}
