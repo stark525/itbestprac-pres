@@ -31,10 +31,21 @@
 				<br>
 				<br>
 				<br>
-				<h3>Dan Stark</h3>
+				<h2>Dan Stark</h2>
+				<h5>dstark75@gmail.com</h5>
+				<br>
 				<h5><p><a href="https://github.com/stark525/itbestprac-pres">https://github.com/stark525/itbestprac-pres</a><p></h5>				
 			</section>
-			<section id="intro-0">
+			<section id="intro-A">
+				<h1>Objectives</h1>
+				<ul style="list-style-type:disc">
+					<li>Automate a tedious process</li>
+					<li>Increase modularity</li>
+					<li>Reduce business expense</li>
+					<li>Provide visibility to process</li>
+				</ul>
+			</section>
+			<section id="intro-B">
 				<h1>Objectives</h1>
 				<ul style="list-style-type:disc">
 					<li>Use Puppet to provide modular setup of a new employee's PC</li>
@@ -64,7 +75,6 @@
 					</ul>
 				</ul>
 			</section>
-			
 			<section id="setup-vagrant">
 				<h1>Setup</h1>
 				<ul style="list-style-type:disc">
@@ -73,8 +83,6 @@
 					<li>Allow Virtualbox and Vagrant private network access (Windows UAC)</li>	
 				</ul>
 			</section>
-
-
 
 			<section id="intro-2">
 				<h1>What is Puppet?</h1>
@@ -122,38 +130,36 @@
     }</code></pre></p>
 			</section>
 
-
-
-
-
-
-
 			<section id="params-intro">
 				<h1>Parameterized classes</h1>
 				<p>Add parameters such as version </p>
 			</section>
 			<section id="params-example"><h1>Super Basic Example</h1>
-	<p><pre><code class="puppet">file { 'C:\SomeApp.exe':
+	<p><pre><code class="puppet">file { "C:\SomeApp.exe-$version":
     ensure  => present,
-    source  => 'puppet:///modules/SomeApp/SomeApp.exe',
-    owner   => 'Administrator',
-    mode    => '0755',
-    require => File['C:\SomeApp'],
-    }
- exec { "set_lb_url":
-    command     => "C:\SomeApp.exe loadbalancerUrl=\"http://$::lb_url\"",
-    subscribe   => File['C:\SomeApp.exe'],
-    notify      => Service['SomeApp'],
-    refreshonly => true,
-    }
-  }  </code></pre></p></font>
-				</section>
+    source  => "puppet:///modules/SomeApp/SomeApp-$version.exe",
+    }</code></pre></p></font>
+			</section>
 
+			<section id="forge-intro">
+				<h1>Where to get modules</h1>
+				<p><h3><p><a href="https://forge.puppetlabs.com/">Puppet Forge</a><p></h3></p>
+			</section>
+			<section id="forge-Powershell">
+				<h1>PS Templates</h1>
+					<p><pre><code class="puppet">exec {"pin_superputty":
+    command     => template('superputty/pin_superputty.ps1'),
+    provider    => powershell,
+    refreshonly => true,
+  }</code></pre></p></font>
+  				<br>
+				<p><h3><p><a href="https://forge.puppetlabs.com/puppetlabs/powershell">puppetlabs/powershell</a><p></h3></p>
+			</section>
 
 
 			<section id="template-intro">
-				<h1>Templates</h1>
-				<p>Pass paramters through to config files</p>
+				<h1>Other Template Usage</h1>
+				<p>Pass parameters through to config files</p>
 			</section>	
 			
 			<section id="template-example1">
@@ -198,7 +204,7 @@
 			<section id="facter-intro">
 				<h1>Facter</h1>
 				<p>Provides "facts" regarding key components of your machine: ipaddress_eth0, fqdn, etc</p>
-				<p><pre><code class="html">[root@somehost]# facter | grep fqdn
+				<p><pre><code class="html">[root@somehost]# facter fqdn
 fqdn => somehost.example.com</code></pre></p><br>
 				<p>Installs with puppet</p><br>
 				<p>Free parameters you can use in your Puppet code</p>
@@ -227,63 +233,29 @@ end</code></pre></p>
 	<p><pre><code class="puppet">file { 'C:\SomeApp.exe':
     ensure  => present,
     source  => 'puppet:///modules/SomeApp/SomeApp.exe',
-    owner   => 'Administrator',
-    mode    => '0755',
-    require => File['C:\SomeApp'],
+    notify	=> Exec['set_environment'],
     }
- exec { "set_lb_url":
-    command     => "C:\SomeApp.exe loadbalancerUrl=\"http://$::lb_url\"",
-    subscribe   => File['C:\SomeApp.exe'],
+ exec { "set_environment":
+    command     => "C:\SomeApp.exe /environment \"$::environment\"",
     notify      => Service['SomeApp'],
     refreshonly => true,
     }
-  }  </code></pre></p></font>
+</code></pre></p></font>
 </section>
+
 <section id="wally">
 	<iframe width="1680" height="660" src="https://www.youtube.com/embed/FzjtPtOH-Hg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"></iframe>
 </section>
-<section id="standalone">
-	<h1>Developer Implications</h1>
-	<p>All-in-one instance that uses localhost, Amazon EC2, etc.</p>
-	<p>You're running what Ops uses for qualified environments</p>
-	<p>You can help drive Operations</p>
-</section>
 
-<section id="future">
-	<h1>The future of puppet</h1>
-	<img src="content/bacon.jpg"></img>
-</section>
-<section id="foreman">
-	<h1>Foreman</h1>
-	<p>Provisioning</p>
-	<p>Configuration</p>
-	<p>Monitoring</p><br>
+<section id="other stuff">
+	<h1>Other things to know</h1>
+	<h3><a href="https://docs.puppetlabs.com/puppetdb/latest/">puppetdb</a></h3>
+	<h3><a href="https://docs.puppetlabs.com/hiera/1/">hiera</a></h3>
 	<h3><a href="http://theforeman.org/">Foreman</a></h3>
-</section>
-<section id="rspec">
-	<h1>rspec-puppet</h1>
-	<p>Test your modules without having to try an ad-hoc puppet run</p><br>
 	<h3><a href="http://rspec-puppet.com/tutorial/">rspec</a></h3>
-</section>
-<section id="hiera">
-	<h1>Hiera data model</h1>
-	<p>Completely abstract data out of site.pp</p>
-	<p>New nodes spun up automagically know what they need</p>
-	<p>Great for scaling</p>
+	<h3><a href="http://www.craigdunn.org/2012/05/239/">Roles and Profiles</a></h3>
 </section>
 
-<section id="conclusion">
-	<h1>Conclusion</h1>
-</section>
-<section id="outro">
-	<h2>99.99% uptime #thedream</h2>
-		<ul>
-		<li>Develop and test change faster</li>
-		<li>Maintain a stable state</li>
-		<li>Transparency within Operations</li>
-		</ul>
-	</h1>
-</section>
 <section id="camb">
 	<img src="content/camb.jpg"></img>
 </section>
