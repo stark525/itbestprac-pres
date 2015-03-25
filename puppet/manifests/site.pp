@@ -1,4 +1,4 @@
-node 'win7' {
+node 'win7.localdomain' {
   class {'notepad_plus_plus':}
   class {'keepass':}
   class {'mozilla_firefox':}
@@ -7,9 +7,4 @@ node 'win7' {
   class {'gitbash':}
   class {'sevenzip':} ->
   class {'superputty':}
-  
-  #class {'jdk':
-  #  version => '7u75'
-  #}
-
 }

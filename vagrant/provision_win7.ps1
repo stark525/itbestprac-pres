@@ -14,3 +14,4 @@ msiexec /jm "$storageDir\puppet-$puppetVersion-x64.msi"
 msiexec /qn /i "$storageDir\puppet-$puppetVersion-x64.msi" PUPPET_MASTER_SERVER=master.dev.com
 
 ac -Encoding UTF8  C:\Windows\system32\drivers\etc\hosts "10.1.1.10 master.dev.com"
+ac -Encoding UTF8  C:\Windows\system32\drivers\etc\hosts "10.10.10.10 win7.localdomain"
