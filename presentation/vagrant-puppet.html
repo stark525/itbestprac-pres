@@ -135,9 +135,9 @@
 				<p>Add parameters such as version </p>
 			</section>
 			<section id="params-example"><h1>Super Basic Example</h1>
-	<p><pre><code class="puppet">file { "C:\SomeApp.exe-$version":
-    ensure  => present,
-    source  => "puppet:///modules/SomeApp/SomeApp-$version.exe",
+	<p><pre><code class="puppet">    file { "C:\SomeApp.exe-$version":
+        ensure  => present,
+        source  => "puppet:///modules/SomeApp/SomeApp-$version.exe",
     }</code></pre></p></font>
 			</section>
 
@@ -147,11 +147,11 @@
 			</section>
 			<section id="forge-Powershell">
 				<h1>PS Templates</h1>
-					<p><pre><code class="puppet">exec {"pin_superputty":
-    command     => template('superputty/pin_superputty.ps1'),
-    provider    => powershell,
-    refreshonly => true,
-  }</code></pre></p></font>
+					<p><pre><code class="puppet">    exec {"pin_superputty":
+        command     => template('superputty/pin_superputty.ps1'),
+        provider    => powershell,
+        refreshonly => true,
+    }</code></pre></p></font>
   				<br>
 				<p><h3><p><a href="https://forge.puppetlabs.com/puppetlabs/powershell">puppetlabs/powershell</a><p></h3></p>
 			</section>
@@ -165,9 +165,9 @@
 			<section id="template-example1">
 				<h1>site.pp</h1>
 				<p>manifests/site.pp</p>
-				<p><pre><code class="ruby">class {'apache2':
-				apache2_listen_port => '8000',
-}</code></pre></p></font>
+				<p><pre><code class="ruby">    class {'apache2':
+				    apache2_listen_port => '8000',
+    }</code></pre></p></font>
 			</section>
 			
 			<section id="template-example2">
@@ -188,14 +188,14 @@
 			<section id="template-example3">
 				<h1>apache2 manifest</h1>
 				<p>/modules/apache2/manifests/init.pp</p>
-	<p><pre><code class="puppet">class apache2 {
-	file { '/etc/httpd/conf/httpd.conf':
-	   content => template('apache2/httpd.conf.erb'),
-	   owner   => 'apache',
-	   group   => 'apache',
-	   mode    => '0644',
-	}
-}
+	<p><pre><code class="puppet">    class apache2 {
+      file { '/etc/httpd/conf/httpd.conf':
+         content => template('apache2/httpd.conf.erb'),
+         owner   => 'apache',
+         group   => 'apache',
+         mode    => '0644',
+      }
+    }
 	</code></pre></p></font>
 			</section>				
 			
@@ -204,8 +204,8 @@
 			<section id="facter-intro">
 				<h1>Facter</h1>
 				<p>Provides "facts" regarding key components of your machine: ipaddress_eth0, fqdn, etc</p>
-				<p><pre><code class="html">[root@somehost]# facter fqdn
-fqdn => somehost.example.com</code></pre></p><br>
+				<p><pre><code class="html">    [root@somehost]# facter fqdn
+    fqdn => somehost.example.com</code></pre></p><br>
 				<p>Installs with puppet</p><br>
 				<p>Free parameters you can use in your Puppet code</p>
 			</section>
@@ -215,50 +215,49 @@ fqdn => somehost.example.com</code></pre></p><br>
  				<p>Added to facter list at puppet runtime</p>
  			</section>
  			<section id="custom-example">
- 				<p><pre><code class="ruby">Facter.add(:environment) do
-    setcode do
-        if Facter.value(:hostname) =~ /QA/
-            'QA'
-        elsif Facter.value(:hostname) =~ /PRD/
-            'PRD'
-        elsif Facter.value(:hostname) =~ /dev/
-            'DEV'
-        else
-	        nil
+ 				<p><pre><code class="ruby">    Facter.add(:environment) do
+        setcode do
+            if Facter.value(:hostname) =~ /QA/
+                'QA'
+            elsif Facter.value(:hostname) =~ /PRD/
+                'PRD'
+            elsif Facter.value(:hostname) =~ /dev/
+                'DEV'
+            else
+	            nil
+            end
         end
-    end
-end</code></pre></p>
+    end</code></pre></p>
 			</section>
-<section id="muh-example"><h1>Custom Fact Example</h1>
-	<p><pre><code class="puppet">file { 'C:\SomeApp.exe':
-    ensure  => present,
-    source  => 'puppet:///modules/SomeApp/SomeApp.exe',
-    notify	=> Exec['set_environment'],
+	<section id="muh-example"><h1>Custom Fact Example</h1>
+	<p><pre><code class="puppet">    file { 'C:\SomeApp.exe':
+        ensure  => present,
+        source  => 'puppet:///modules/SomeApp/SomeApp.exe',
+        notify	=> Exec['set_environment'],
     }
- exec { "set_environment":
-    command     => "C:\SomeApp.exe /environment \"$::environment\"",
-    notify      => Service['SomeApp'],
-    refreshonly => true,
-    }
-</code></pre></p></font>
-</section>
+     exec { "set_environment":
+        command     => "C:\SomeApp.exe /environment \"$::environment\"",
+        notify      => Service['SomeApp'],
+        refreshonly => true,
+    }</code></pre></p></font>
+	</section>
 
-<section id="wally">
-	<iframe width="1680" height="660" src="https://www.youtube.com/embed/FzjtPtOH-Hg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"></iframe>
-</section>
+	<section id="wally">
+		<iframe width="1680" height="660" src="https://www.youtube.com/embed/FzjtPtOH-Hg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"></iframe>
+	</section>
 
-<section id="other stuff">
-	<h1>Other things to know</h1>
-	<h3><a href="https://docs.puppetlabs.com/puppetdb/latest/">puppetdb</a></h3>
-	<h3><a href="https://docs.puppetlabs.com/hiera/1/">hiera</a></h3>
-	<h3><a href="http://theforeman.org/">Foreman</a></h3>
-	<h3><a href="http://rspec-puppet.com/tutorial/">rspec</a></h3>
-	<h3><a href="http://www.craigdunn.org/2012/05/239/">Roles and Profiles</a></h3>
-</section>
+	<section id="other stuff">
+		<h1>Other things to know</h1>
+		<h3><a href="https://docs.puppetlabs.com/puppetdb/latest/">puppetdb</a></h3>
+		<h3><a href="https://docs.puppetlabs.com/hiera/1/">hiera</a></h3>
+		<h3><a href="http://theforeman.org/">Foreman</a></h3>
+		<h3><a href="http://rspec-puppet.com/tutorial/">rspec</a></h3>
+		<h3><a href="http://www.craigdunn.org/2012/05/239/">Roles and Profiles</a></h3>
+	</section>
 
-<section id="camb">
-	<img src="content/camb.jpg"></img>
-</section>
+	<section id="camb">
+		<img src="content/camb.jpg"></img>
+	</section>
 			</div>
 	</div>
 	<script src="lib/js/head.min.js"></script>
