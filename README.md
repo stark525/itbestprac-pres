@@ -7,9 +7,9 @@ http://www.meetup.com/IT-Best-Practices-Greater-Philadelphia-User-Group/events/2
 
 ##View presentation
 
-I built this with reveal.js <http://lab.hakim.se/reveal-js/#/> and highlight.js <https://highlightjs.org/>.  Fun tools, and they look super slick.
+I built this with [reveal.js] (http://lab.hakim.se/reveal-js/#/) and [highlight.js] (https://highlightjs.org/).  Fun tools, and they look super slick.
 
 Clone the repo, then open presentation/vagrant-puppet.html.  Enjoy the rebus puzzles (my high school students loved them!)
 
 ##Puppet
-Ensure you've installed Vagrant <http://vagrantup.com>.  Then, use the vagrant/Vagrantfile I've provided.  There are detailed instructions in the vagrant and puppet subdirectories.
+Ensure you've installed [Vagrant] (http://vagrantup.com).  Then, use the vagrant/Vagrantfile I've provided.  There are detailed instructions in the vagrant and puppet subdirectories.
