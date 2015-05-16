@@ -14,6 +14,12 @@ class mozilla_firefox {
         install_options => ['-ms'],
         require         => File['FirefoxSetup36.0.exe']
       }
+      exec {"pin_ff":
+        command   => template('firefox/pin_firefox.ps1'),
+        provider  => powershell,
+        refreshonly => true,
+        subscribe   => Package['Mozilla Firefox'],
+      }          
     }
     default: {
       fail("Unsupported osfamily: ${::osfamily}")
