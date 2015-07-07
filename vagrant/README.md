@@ -3,7 +3,7 @@ Vagrant known issues
 The Windows VM I'm using has the Administrator account disabled, so the powershell script to install Puppet fails by default.  A quick fix can be to re enable the Administrator account (you can even do this before the script is called).
 
 Right click My Computer > Manage
-Right click Administrator > Set password to 'vagrant'
+Expand Local Users and Groups > Users > Right click Administrator > Set password to 'vagrant'
 Right click Administrator > Properties > Untick Disable account
 Log out and log back in.
 Get it done before provisioning script and it will run the puppet msi.

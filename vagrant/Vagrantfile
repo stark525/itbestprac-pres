@@ -6,19 +6,26 @@ VAGRANTFILE_API_VERSION = "2"
 
 # Set your local puppet project's manifests and modules directory here.
 # Additionally, you may also want to link things such as your puppet.conf, hiera, etc.
-PATH_TO_MANIFESTS = "C:\\Projects\\itbestprac-pres\\puppet\\manifests"
-PATH_TO_MODULES = "C:\\Projects\\itbestprac-pres\\puppet\\modules"
+
+# Windows Example:
+#PATH_TO_MANIFESTS = "C:\\Projects\\itbestprac-pres\\puppet\\manifests"
+#PATH_TO_MODULES = "C:\\Projects\\itbestprac-pres\\puppet\\modules"
+
+PATH_TO_MANIFESTS = "../puppet/manifests"
+PATH_TO_MODULES = "../puppet/modules"
+
+
 PROVISION_MASTER_SCRIPT = "provision_puppetmaster.sh"
 PROVISION_WIN7_SCRIPT = "provision_win7.ps1"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "win7", primary: true do |win7|
-	win7.vm.box      = "win7"
-	config.vm.provision "shell", :path => "#{PROVISION_WIN7_SCRIPT}"
-	config.vm.hostname = "win7"
-	config.vm.communicator = "winrm"
-	config.vm.network :private_network, ip: "10.10.10.10"
-	config.vm.box_url = "https://atlas.hashicorp.com/designerror/boxes/windows-7/versions/1.0/providers/virtualbox.box"		
+  	win7.vm.box = "designerror/windows-7"
+  	config.vm.provision "shell", :path => "#{PROVISION_WIN7_SCRIPT}"
+  	config.vm.hostname = "win7"
+  	config.vm.communicator = "winrm"
+  	config.vm.network :private_network, ip: "10.10.10.10"
+  	config.vm.box_url = "https://atlas.hashicorp.com/designerror/boxes/windows-7/versions/1.0/providers/virtualbox.box"		
     config.vm.provider :virtualbox do |vb|
       vb.gui = true
       vb.customize ["modifyvm", :id, "--memory", 1024]
@@ -26,14 +33,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--vram", "32"]
       vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
       vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
-	end
+  	end
   end
-
-
   
   config.vm.define "master", primary: true do |master|
-	master.vm.box = "CentOS6.5"
-	config.vm.provision "shell", inline: "echo Bringing up master machine. Ensure your synced folders are set to your local Puppet manifests and modules directories."
+	  master.vm.box = "CentOS6.5"
+	  config.vm.provision "shell", inline: "echo Bringing up master machine. Ensure your synced folders are set to your local Puppet manifests and modules directories."
     config.vm.provision "shell", :path => "#{PROVISION_MASTER_SCRIPT}"
     config.vm.network :private_network, ip: "10.1.1.10"
     config.vm.network :forwarded_port, id: 'tcp', guest: 80, host: 8084
@@ -41,9 +46,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.hostname = 'master.dev.com'
     config.vm.synced_folder "#{PATH_TO_MANIFESTS}", "/etc/puppet/manifests"
     config.vm.synced_folder "#{PATH_TO_MODULES}", "/etc/puppet/modules"
-	config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box"
-	config.vm.provider :virtualbox do |vb|
-	  vb.gui = false
-	end
+	  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box"
+	  config.vm.provider :virtualbox do |vb|
+	    vb.gui = false
+	  end
   end
 end
