@@ -1,3 +1,5 @@
+# REPLACE THIS WITH ACTUAL WINDOWS JDK MODULE
+
 class jdk ($version) {
   file { "jdk-$version-windows-x64.exe":
     source              => "puppet:///modules/jdk/jdk-$version-windows-x64.exe",
